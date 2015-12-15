@@ -65,8 +65,16 @@ public class TheSieveOfEratosthenes {
             }
         };
 
-        startThreads(alwaysWriteTask);
-        startThreads(testAndWrite);
+        switch (args[0]) {
+            case "alwaysWrite":
+                startThreads(alwaysWriteTask);
+                break;
+            case "testAndWrite":
+                startThreads(testAndWrite);
+                break;
+            default:
+                throw new IllegalArgumentException("alwaysWrite|testAndWrite argument not found");
+        }
 
     }
 }
