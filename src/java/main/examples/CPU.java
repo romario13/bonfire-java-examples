@@ -1,40 +1,94 @@
 package examples;
 
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 /**
  */
 public class CPU {
-    
-    public static void firstMethod(long delay) {
-        run(delay);
-    }
 
-    public static void secondMethod(long delay) {
-        run(delay);
-    }
+    public static final int SIZE = 16 * 1024 * 1024;
+    public static final int SQRT_SIZE = (int) Math.sqrt(SIZE);
 
-    public static void thirdMethod(long delay) {
-        run(delay);
-    }
+    public static boolean[] firstMethod() {
 
-    private static void run(long delay) {
-        while (true) {
-            try {
-                TimeUnit.MICROSECONDS.sleep(delay);
-            } catch (InterruptedException ignore) {
+        boolean[] s = new boolean[SIZE];
+
+        for (int i = 2; i <= SQRT_SIZE; i++) {
+            if (!s[i]) {
+                for (int j = i * i; j < SIZE; j += i) {
+                    if (!s[j]) {
+                        s[j] = true;
+                    }
+                }
             }
+
+        }
+
+        return s;
+    }
+
+    public static boolean[] secondMethod() {
+        boolean[] s = new boolean[SIZE];
+
+        for (int i = 2; i <= SQRT_SIZE; i++) {
+            if (!s[i]) {
+                for (int j = i * i; j < SIZE; j += i) {
+                    if (!s[j]) {
+                        s[j] = true;
+                    }
+                }
+            }
+
+        }
+
+        return s;
+    }
+
+    public static boolean[] thirdMethod() {
+        boolean[] s = new boolean[SIZE];
+
+        for (int i = 2; i <= SQRT_SIZE; i++) {
+            if (!s[i]) {
+                for (int j = i * i; j < SIZE; j += i) {
+                    if (!s[j]) {
+                        s[j] = true;
+                    }
+                }
+            }
+
+        }
+
+        return s;
+    }
+
+    public static void startThreads(Runnable task, int concurrency) {
+
+        for (int i = 0; i < concurrency; i++) {
+            new Thread(task).start();
         }
     }
 
     public static void main(String[] args) {
 
-        final Random rnd = new Random();
+        Runnable firstTask = () -> {
+            while (true) {
+                CPU.firstMethod();
+            }
+        };
 
-        new Thread (() -> {CPU.firstMethod(rnd.nextInt(100));}).start();
-        new Thread (() -> {CPU.secondMethod(rnd.nextInt(100));}).start();
-        new Thread (() -> {CPU.thirdMethod(rnd.nextInt(100));}).start();
+        Runnable secondTask = () -> {
+            while (true) {
+                CPU.secondMethod();
+            }
+        };
+
+        Runnable thirdTask = () -> {
+            while (true) {
+                CPU.thirdMethod();
+            }
+        };
+
+        startThreads(firstTask, 1);
+        startThreads(secondTask, 5);
+        startThreads(thirdTask, 10);
     }
 
 }
